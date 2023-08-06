@@ -5,14 +5,14 @@ from loguru import logger
 
 
 @logger.catch()
-def pushplus(content, token, template='markdown'):
+def pushplus(content, token, template='txt'):
     title = '腾讯视频签到提醒'
     url = 'http://www.pushplus.plus/send/'
     data = {
         "token": token,
         "title": title,
         "content": content,
-        "template": "markdown"
+        "template": template
     }
     body = json.dumps(data).encode(encoding='utf-8')
     headers = {'Content-Type': 'application/json'}

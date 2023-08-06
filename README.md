@@ -27,7 +27,7 @@
 
 
 
-1. Fork 本仓库，然后点击你的仓库右上角的 Settings，找到 Secrets 这一项actions，添加 LOGIN_COOKIE 、LOGIN_URL、 LOGIN_URL_PAYLOADLOAD、PUSHPLUS_TOKEN四个变量。
+1. Fork 本仓库，然后点击你的仓库右上角的 Settings，找到 Secrets 这一项actions，添加 LOGIN_COOKIE 、LOGIN_URL、 LOGIN_URL_PAYLOADLOAD、PUSHPLUS_TOKEN、GET_VIP_INFO_URL_PAYLOAD五个变量。
 
    ![image-20230806202139340](README.assets/image-20230806202139340.png)
 
@@ -60,6 +60,8 @@
 6. `PUSHPLUS_TOKEN`公众号pushplus获取
 
 > 注意：如果报错没有通过图像验证，需要在cookie中加入vdevice_qimei36='...'[使用常用手机打开获取](https://m.v.qq.com/schemerul)
+
+7. `GET_VIP_INFO_URL_PAYLOAD`[同样方法获取该连接的请求体](https://vip.video.qq.com/rpc/trpc.query_vipinfo.vipinfo.QueryVipInfo/GetVipUserInfoH5)
 
 
 
