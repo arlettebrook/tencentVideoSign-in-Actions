@@ -7,10 +7,10 @@ from loguru import logger
 
 import push
 
-# 从环境变量获取 LOGIN_COOKIE 的值
-login_cookie = os.getenv('LOGIN_COOKIE')
-login_url = os.getenv('LOGIN_URL')
-login_url_payload = os.getenv('LOGIN_URL_PAYLOADLOAD')
+login_cookie = 'video_platform=2; video_guid=64df242b475e272d; pgv_pvid=8204789012; RK=wS3gS7kMcG; ptcz=b4fe5fa05228fdf1d55eaf8de974ac5beb9292dbeb13624fc1111975f9f2f7ef; qq_domain_video_guid_verify=64df242b475e272d; main_login=qq; vqq_access_token=C8A76D88989C712DBEC66C77CE71B627; vqq_appid=101483052; vqq_openid=5CAF661D0FEE4676AA99900760B7F10E; vqq_vuserid=1208820857; vqq_refresh_token=F5B96C4152AFD012169FA55D65DA68AE; qq_nick=Arlettebrook; qq_head=https%3A%2F%2Fcommunity.image.video.qpic.cn%2F1234_bda48d-0_545698057_1672575460967170; vqq_vusession=xAQhbtCjlCXEeM7bm0HfPg.M; vqq_next_refresh_time=6600; vqq_login_time_init=1690952477; pgv_info=ssid=s7865864995; vdevice_qimei36=822e46d42fddb0a22a9411ff10001b016309; login_time_last=2023-8-2 13:1:19'
+login_url = 'https://pbaccess.video.qq.com/trpc.video_account_login.web_login_trpc.WebLoginTrpc/NewRefresh?g_tk=&g_vstk=167733934&g_actk=1590963589'
+login_url_payload = """{"type": "qq", "si": {"h38": "b885b12b67288e7dcc0183f30200000b31771b", "q36": "", "s": "000000014068b89153f4562362f80aafc61a5f261f1bbe9f47f26dad070abd34edb2085eefbcbd8999bea9fd5e612dcfa466e132725b168151744f5683ca9b054eb4904d071de80c3c931c306beda187500b50f609b9fd4b0ec83d6db51719869479e9b9630b6bcc1e81329be0dbc36103739ebff1d91c0f0205c08041a2771cf25bdd18525e661da11a4825de788b5c90f99f65a5c3adecc909485c9fe813aa88bd65c212227b0525df84e1754191cb74aac19de74043edb0f4058c2e5ee988f186283ab73eb5b93e1b1d5774404ac7f0a8d563a9d72cd9278956163ce989302b5132e64ce0b0d92c84596cbbb47863d7603be0c6d3f91b543db0", "o_data": "g=64df242b475e272d&t=1690455867510&r=5cFXlb4OTc"}}"""
+
 PUSHPLUS_TOKEN = os.getenv('PUSHPLUS_TOKEN')
 
 
