@@ -11,7 +11,7 @@
 
 
 
-## 今日签到状态
+## 🎈今日签到状态
 
 ![tencnetVideoAutoCheck](https://github.com/arlettebrook/tencentVideoAutoCheck/actions/workflows/main.yml/badge.svg)
 
@@ -19,11 +19,19 @@
 
 
 
-## 使用说明
+## **⚡ 支持**   
+
+* [x] 每日凌晨自动签到
+* [x] 每日凌晨自动领取一小时V力值任务【前提已完成，否则为0】
+* [x] 自动推送每日完成任务情况
 
 
 
-### 配置流程
+## 🍝使用说明
+
+
+
+### 🙍🏻‍♀️配置流程
 
 
 
@@ -46,7 +54,7 @@
 
 
 
-### login_cookie等参数的获取
+### 🙍🏻‍♂️login_cookie等参数的获取
 
 
 
@@ -69,7 +77,7 @@
 
 
 
-### 配置workflow执行信息写入到run.log
+### 🙎🏻‍♀️配置workflow执行信息写入到run.log
 
 
 
@@ -86,7 +94,7 @@
 
 
 
-### 查看运行状态
+### 🙅🏻‍♀️查看运行状态
 
 进入jobs查看check-in-status步骤即可查看输出日志
 
@@ -98,3 +106,20 @@
 
 
 
+## ✨相似项目
+
+- [bigoceans/TencentVideoAutoCheck](https://github.com/bigoceans/TencentVideoAutoCheck)
+- [bigoceans/TencentVideoAutoCheck2.0](https://github.com/bigoceans/TencentVideoAutoCheck2.0)
+
+本项目基于以上项目开发，感谢支持。
+
+
+
+---
+
+
+
+## 🚔声明
+
+本项目仅供学习研究，请勿滥用！
+下载后请于24小时内删除，多谢合作！
