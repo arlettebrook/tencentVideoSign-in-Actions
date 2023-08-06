@@ -30,12 +30,13 @@ jobs:
 
       - name: Run check-in-status
         run: |
-          python main.py --login_cookie "$LOGIN_COOKIE" --login_url "$LOGIN_URL" --login_url_payload "$LOGIN_URL_PAYLOADLOAD" --PUSHPLUS_TOKEN "$PUSHPLUS_TOKEN" >> run.log
+          python main.py --login_cookie "$LOGIN_COOKIE" --login_url "$LOGIN_URL" --login_url_payload "$LOGIN_URL_PAYLOADLOAD" --PUSHPLUS_TOKEN "$PUSHPLUS_TOKEN" --GET_VIP_INFO_URL_PAYLOAD "$GET_VIP_INFO_URL_PAYLOAD" >> run.log
         env:
           LOGIN_COOKIE: ${{ secrets.LOGIN_COOKIE }}
           LOGIN_URL: ${{secrets.LOGIN_URL}}
           LOGIN_URL_PAYLOADLOAD: ${{secrets.LOGIN_URL_PAYLOADLOAD}}
           PUSHPLUS_TOKEN: ${{secrets.PUSHPLUS_TOKEN}}
+          GET_VIP_INFO_URL_PAYLOAD: ${{secrets.GET_VIP_INFO_URL_PAYLOAD}}
 
       - name: Append Success Log #追加成功日志
         run: |
