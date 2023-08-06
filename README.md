@@ -69,7 +69,7 @@
 
 > 注意：如果报错没有通过图像验证，需要在cookie中加入vdevice_qimei36='...'[使用常用手机打开获取](https://m.v.qq.com/schemerul)
 
-7. `GET_VIP_INFO_URL_PAYLOAD`[同样方法获取该连接的请求体](https://vip.video.qq.com/rpc/trpc.query_vipinfo.vipinfo.QueryVipInfo/GetVipUserInfoH5)
+7. `GET_VIP_INFO_URL_PAYLOAD`[同样方法获取该链接的请求体](https://vip.video.qq.com/rpc/trpc.query_vipinfo.vipinfo.QueryVipInfo/GetVipUserInfoH5)
 
 
 
@@ -121,5 +121,5 @@
 
 ## 🚔声明
 
-本项目仅供学习研究，请勿滥用！
-下载后请于24小时内删除，多谢合作！
+**本项目仅供学习研究，请勿滥用！下载后请于24小时内删除，多谢合作！**
+
