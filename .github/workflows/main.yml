@@ -9,7 +9,7 @@ on:
     - cron: '0 1 * * *'
 
 jobs:
-  tencentVideoAutoCheck-status:
+  tencentVideoAutoCheck:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt  # 安装依赖
 
-      - name: Run check-in
+      - name: Run check-in-status
         run: |
           python main.py --login_cookie "$LOGIN_COOKIE" --login_url "$LOGIN_URL" --login_url_payload "$LOGIN_URL_PAYLOADLOAD" --PUSHPLUS_TOKEN "$PUSHPLUS_TOKEN" >> run.log
         env:
