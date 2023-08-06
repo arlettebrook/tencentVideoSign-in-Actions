@@ -1,3 +1,4 @@
+
 <p align="center">
   <h2 align="center"><storng>腾讯视频自动签到</storng></h2>
   <p align="center">
@@ -41,6 +42,8 @@
 
 4. 至此自动签到就搭建完毕了。
 
+---
+
 
 
 ### login_cookie等参数的获取
@@ -58,7 +61,11 @@
 
 > 注意：如果报错没有通过图像验证，需要在cookie中加入vdevice_qimei36='...'[使用常用手机打开获取](https://m.v.qq.com/schemerul)
 
-​	
+
+
+---
+
+
 
 ### 配置workflow执行信息写入到run.log
 
@@ -73,8 +80,19 @@
 
 
 
+---
+
+
+
 ### 查看运行状态
 
 进入jobs查看check-in-status步骤即可查看输出日志
 
 ![image-20230806204758646](README.assets/image-20230806204758646.png)
+
+
+
+---
+
+
+
