@@ -110,6 +110,7 @@
 
 - [bigoceans/TencentVideoAutoCheck](https://github.com/bigoceans/TencentVideoAutoCheck)
 - [bigoceans/TencentVideoAutoCheck2.0](https://github.com/bigoceans/TencentVideoAutoCheck2.0)
+- [raindrop-hb/tencent-video](https://github.com/raindrop-hb/tencent-video)
 - [arlettebrook/tencentVideoAutoCheck](https://github.com/arlettebrook/tencentVideoAutoCheck)
 
 本项目基于以上项目开发，感谢支持。
