@@ -59,7 +59,7 @@ def tencent_video_login():
         body = login_url_payload
         login_rsp = requests.post(url=login_url, data=body, headers=login_headers)
         if login_rsp.status_code == 200:
-            logger.info("登录成功")
+            logger.success("登录成功")
             logger.debug("登录数据：" + login_rsp.text)
             logger.debug(f"获取到的cookies：{login_rsp.cookies}", )
             return login_rsp
@@ -76,7 +76,7 @@ def get_cookies():
         login_rsp = tencent_video_login()
         login_cookie_dict.update(login_rsp.cookies.get_dict())
         auth_cookie = "; ".join([f"{key}={value}" for key, value in login_cookie_dict.items()])
-        logger.info('auth_cookie:' + auth_cookie)
+        logger.success('auth_cookie:' + auth_cookie)
 
         return auth_cookie
     except Exception as e:
@@ -192,7 +192,7 @@ def tencent_video_get_look(auth_cookies):
         res_2 = json.loads(response_2.text)
         log = "\n观看获得v力值:" + str(res_2['provide_value'])
         logger.debug(f"v力值响应内容：{res_2}")
-        logger.info(log)
+        logger.success(log)
         return log
     except Exception as e:
         try:
@@ -241,7 +241,7 @@ def tencent_video_get_vip_info(auth_cookies):
             if res_3['endmsg'] != '':
                 log = log + '\nendmsg:' + res_3['endmsg']
             log += log_status
-            logger.info(log)
+            logger.success(log)
             return log
         except Exception as e:
             try:
@@ -266,9 +266,9 @@ def tencent_video_get_vip_info(auth_cookies):
 
 if __name__ == '__main__':
     try:
-        logger.info("腾讯视频自动签到启动成功")
+        logger.success("腾讯视频自动签到启动成功")
         tencent_video_sign_in()
-        logger.info("10秒之后退出程序")
+        logger.success("10秒之后退出程序")
         time.sleep(10)
     except Exception as e:
         logger.error(e)
