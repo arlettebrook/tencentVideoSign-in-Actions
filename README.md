@@ -86,7 +86,7 @@
 2. 如图
 ![配置workflow执行信息写入到run.log](img/3.jpg)
 3. 如图，保存
-![配置workflow执行信息写入到run.log](/img/4.jpg)
+![配置workflow执行信息写入到run.log](./img/4.jpg)
 
 
 
@@ -110,6 +110,7 @@
 
 - [bigoceans/TencentVideoAutoCheck](https://github.com/bigoceans/TencentVideoAutoCheck)
 - [bigoceans/TencentVideoAutoCheck2.0](https://github.com/bigoceans/TencentVideoAutoCheck2.0)
+- [arlettebrook/tencentVideoAutoCheck](https://github.com/arlettebrook/tencentVideoAutoCheck)
 
 本项目基于以上项目开发，感谢支持。
 
