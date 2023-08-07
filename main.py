@@ -85,7 +85,7 @@ def get_cookies():
 
 
 def tencent_video_sign_in():
-    auth_cookie = get_cookies()
+    auth_cookies = get_cookies()
     sign_in_url = "https://vip.video.qq.com/rpc/trpc.new_task_system.task_system.TaskSystem/CheckIn?rpc_data={}"
     sign_headers = {
         'Referer': 'https://film.video.qq.com/x/vip-center/?entry=common&hidetitlebar=1&aid=V0%24%241%3A0%242%3A8%243%3A8.7.85.27058%244%3A3%245%3A%246%3A%247%3A%248%3A4%249%3A%2410%3A&isDarkMode=0',
@@ -94,7 +94,7 @@ def tencent_video_sign_in():
         'Content-Type': 'application/json',
         'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2104K10AC Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/89.0.4389.72 MQQBrowser/6.2 TBS/046237 Mobile Safari/537.36 QQLiveBrowser/8.7.85.27058',
         'Accept-Encoding': 'gzip, deflate, br',
-        "Cookie": auth_cookie
+        "Cookie": auth_cookies
     }
     sign_rsp = requests.get(url=sign_in_url, headers=sign_headers)
 
@@ -116,8 +116,9 @@ def tencent_video_sign_in():
     logger.debug('签到状态：' + log)
 
     # requests.get('https://sc.ftqq.com/自己的sever酱号.send?text=' + quote('签到积分：' + str(rsp_score)))
-    push.pushplus(log, PUSHPLUS_TOKEN)
-    tencent_video_get_vip_info()
+    if PUSHPLUS_TOKEN:
+        push.pushplus(log, PUSHPLUS_TOKEN)
+    tencent_video_get_vip_info(auth_cookies)
 
 
 def tencent_video_task_status(auth_cookies):
@@ -207,8 +208,7 @@ def tencent_video_get_look(auth_cookies):
             return log
 
 
-def tencent_video_get_vip_info():
-    auth_cookies = get_cookies()
+def tencent_video_get_vip_info(auth_cookies):
     log = tencent_video_get_score(auth_cookies)
     log_status = tencent_video_task_status(auth_cookies) + tencent_video_get_look(auth_cookies)
     get_vip_info_url_payload = os.getenv("GET_VIP_INFO_URL_PAYLOAD")
@@ -258,7 +258,8 @@ def tencent_video_get_vip_info():
                 logger.exception(e)
                 return log
         finally:
-            push.pushplus(log,PUSHPLUS_TOKEN)
+            if PUSHPLUS_TOKEN:
+                push.pushplus(log, PUSHPLUS_TOKEN)
     else:
         logger.error("获取会员信息响应失败")
 
