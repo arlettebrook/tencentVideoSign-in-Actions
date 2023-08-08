@@ -12,6 +12,7 @@ def main():
             tencentVideo = TencentVideo()
             logger.success("腾讯视频自动签到启动成功")
             tencentVideo.tencent_video_sign_in()
+            logger.success("腾讯视频任务已完成")
         logger.success("10秒之后退出程序")
         time.sleep(10)
     except Exception as e:
