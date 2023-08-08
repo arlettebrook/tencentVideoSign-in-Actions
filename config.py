@@ -21,7 +21,7 @@ class TencentVideo:
 
     @staticmethod
     def _get_push_token():
-        push_token=os.getenv('PUSHPLUS_TOKEN')
+        push_token = os.getenv('PUSHPLUS_TOKEN')
         if push_token:
             logger.success('PUSHPLUS_TOKEN已配置')
             return push_token
@@ -31,7 +31,7 @@ class TencentVideo:
 
     @staticmethod
     def _get_vip_info_url_payload():
-        vip_info_url_payload= os.getenv('GET_VIP_INFO_URL_PAYLOAD')
+        vip_info_url_payload = os.getenv('GET_VIP_INFO_URL_PAYLOAD')
         if vip_info_url_payload:
             logger.success('GET_VIP_INFO_URL_PAYLOAD已配置')
             return vip_info_url_payload
@@ -51,7 +51,7 @@ class TencentVideo:
 
     def _exit(self, e):
         logger.error(e)
-        push.pushplus(self.PUSHPLUS_TOKEN, content=e)
+        push.pushplus(token=self.PUSHPLUS_TOKEN, content=e)
         exit(-1)
 
     def _get_login_cookie(self):
@@ -129,7 +129,6 @@ class TencentVideo:
             login_cookie_dict.update(login_rsp.cookies.get_dict())
             auth_cookie = "; ".join([f"{key}={value}" for key, value in login_cookie_dict.items()])
             logger.success('auth_cookie:' + auth_cookie)
-
             return auth_cookie
         except Exception as e:
             logger.error(e)
@@ -168,7 +167,7 @@ class TencentVideo:
 
         # requests.get('https://sc.ftqq.com/自己的sever酱号.send?text=' + quote('签到积分：' + str(rsp_score)))
         if self.PUSHPLUS_TOKEN:
-            push.pushplus("腾讯视频签到提醒", log, self.PUSHPLUS_TOKEN)
+            push.pushplus(title="腾讯视频签到提醒", ccontent=log, token=self.PUSHPLUS_TOKEN)
         self.tencent_video_get_vip_info(auth_cookies)
 
     @staticmethod
@@ -309,6 +308,8 @@ class TencentVideo:
                     return log
             finally:
                 if self.PUSHPLUS_TOKEN:
-                    push.pushplus("腾讯视频会员信息", log, self.PUSHPLUS_TOKEN)
+                    push.pushplus(title="腾讯视频会员信息", content=log, token=self.PUSHPLUS_TOKEN)
         else:
-            logger.error("获取会员信息响应失败")
+            e = "获取会员信息响应失败"
+            logger.error(e)
+            self._exit(e)
