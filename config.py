@@ -470,8 +470,8 @@ class IQY:
                     self.growthTask += item["taskReward"]
         msg = f"+{self.growthTask}成长值"
         logger.info(msg)
-        if self.push_token:
-            push.pushplus(self.push_token, title='爱奇艺领取通知', content=msg)
+        # if self.push_token:
+        #     push.pushplus(self.push_token, title='爱奇艺领取通知', content=msg)
         return msg
 
 
