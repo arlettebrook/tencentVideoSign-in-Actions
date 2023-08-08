@@ -167,7 +167,7 @@ class TencentVideo:
 
         # requests.get('https://sc.ftqq.com/自己的sever酱号.send?text=' + quote('签到积分：' + str(rsp_score)))
         if self.PUSHPLUS_TOKEN:
-            push.pushplus(title="腾讯视频签到提醒", ccontent=log, token=self.PUSHPLUS_TOKEN)
+            push.pushplus(title="腾讯视频签到提醒", content=log, token=self.PUSHPLUS_TOKEN)
         self.tencent_video_get_vip_info(auth_cookies)
 
     @staticmethod
