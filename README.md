@@ -6,7 +6,7 @@
 
 
 
-> **使用方法：**[arlettebrook/tencentVideoAutoCheck-in](https://github.com/arlettebrook/tencentVideoAutoCheck-in)
+> **使用方法：**[arlettebrook/autoCheck-in](https://github.com/arlettebrook/autoCheck-in)
 
 
 
