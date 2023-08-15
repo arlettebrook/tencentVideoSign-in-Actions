@@ -1,10 +1,15 @@
 import json
 import os
+import random
 import re
 import time
+from hashlib import md5
+from string import digits, ascii_lowercase, ascii_uppercase
 
 import requests
+from fake_useragent import UserAgent
 from loguru import logger
+from requests import Session
 
 import push
 
@@ -339,7 +344,37 @@ class IQY:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
             'Cookie': self.iqy_cookie
         }
-        self.P00001 = re.findall(r"P00001=(.*?);", self.iqy_cookie)
+
+        self.user_agent = UserAgent().chrome
+        try:
+            self.P00001 = re.search(r"P00001=(.*?);", self.iqy_cookie).group(1)
+            self.dfp = re.search(r'__dfp=(.*?)@', self.iqy_cookie).group(1)
+        except Exception as e:
+            logger.error(e)
+        self.session = Session()
+        self.headers = {
+            "User-Agent": self.user_agent,
+            "Cookie": f"P00001={self.P00001}",
+            "Content-Type": "application/json"
+        }
+        self.uid = ''
+        self.qyid = self.md5(self.uuid(16))
+
+    @staticmethod
+    def uuid(num, upper=False):
+        uuid = ''
+        if upper:
+            for i in range(num):
+                uuid += random.choice(digits + ascii_lowercase + ascii_uppercase)
+        else:
+            for i in range(num):
+                uuid += random.choice(digits + ascii_lowercase)
+        return uuid
+
+    @staticmethod
+    def md5(uuid):
+        m = md5(uuid.encode(encoding='utf-8'))
+        return m.hexdigest()
 
     @staticmethod
     def _get_push_token():
@@ -351,22 +386,99 @@ class IQY:
             logger.warning('建议配置PUSHPLUS_TOKEN，开启消息通知。')
             return None
 
+    def req(self, url, req_method="GET", body=None):
+        data = {}
+        if req_method.upper() == "GET":
+            try:
+                data = self.session.get(url, headers=self.headers, params=body).json()
+            except Exception as e:
+                logger.error("请求发送失败,可能为网络异常")
+                logger.error(e)
+            #     data = self.session.get(url, headers=self.headers, params=body).text
+            return data
+        elif req_method.upper() == "POST":
+            try:
+                data = self.session.post(url, headers=self.headers, data=json.dumps(body)).json()
+            except Exception as e:
+                logger.error("请求发送失败,可能为网络异常")
+                logger.error(e)
+            #     data = self.session.post(url, headers=self.headers, data=dumps(body)).text
+            return data
+        elif req_method.upper() == "OTHER":
+            try:
+                self.session.get(url, headers=self.headers, params=json.dumps(body))
+            except Exception as e:
+                logger.error("请求发送失败,可能为网络异常")
+                logger.error(e)
+        else:
+            logger.error("您当前使用的请求方式有误,请检查")
+
+    @staticmethod
+    def timestamp(short=False):
+        if short:
+            return int(time.time())
+        return int(time.time() * 1000)
+
+    def getUid(self):
+        url = f'https://passport.iqiyi.com/apis/user/info.action?authcookie={self.P00001}&fields=userinfo%2Cqiyi_vip&timeout=15000'
+        data = self.req(url)
+        logger.debug(f'getUid响应:{data}')
+        if data.get("code") == 'A00000':
+            self.uid = data['data']['userinfo']['pru']
+        else:
+            logger.warning("请求api失败 最大可能是cookie失效了 也可能是网络问题")
+            if self.push_token:
+                push.pushplus(self.push_token, content="爱奇艺每日任务: 请求api失败 最大可能是cookie失效了 也可能是网络问题")
+            exit(-1)
+
+    def get_check_in_url(self):
+        time_stamp = self.timestamp()
+        self.getUid()
+        if self.uid == "":
+            logger.error("获取用户id失败 可能为cookie设置错误或者网络异常,请重试或者检查cookie")
+            exit(0)
+        data = f'agentType=1|agentversion=1|appKey=basic_pcw|authCookie={self.P00001}|qyid={self.qyid}|task_code=natural_month_sign|timestamp={time_stamp}|typeCode=point|userId={self.uid}|UKobMjDMsDoScuWOfp6F'
+        url = f'https://community.iqiyi.com/openApi/task/execute?agentType=1&agentversion=1&appKey=basic_pcw&authCookie={self.P00001}&qyid={self.qyid}&sign={self.md5(data)}&task_code=natural_month_sign&timestamp={time_stamp}&typeCode=point&userId={self.uid}'
+        return url
+
+    def check_in(self):
+        url = self.get_check_in_url()
+        body = {
+            "natural_month_sign": {
+                "taskCode": "iQIYI_mofhr",
+                "agentType": 1,
+                "agentversion": 1,
+                "authCookie": self.P00001,
+                "qyid": self.qyid,
+                "verticalCode": "iQIYI"
+            }
+        }
+        data = self.req(url, "post", body)
+        logger.debug(f'签到返回信息：{data}')
+        if data.get('code') == 'A00000':
+            log = f"签到执行成功, {data['data']['msg']}"
+            logger.success(log)
+            if self.push_token:
+                push.pushplus(self.push_token, title="爱奇艺签到通知", content=log)
+        else:
+            logger.error("签到失败，原因可能是签到接口又又又又改了")
+
     def get_user_info(self):
         user_info_url = "http://serv.vip.iqiyi.com/vipgrowth/query.action"
         params = {
             "P00001": self.P00001,
         }
-        user_info_headers = {
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-            'Accept-Encoding': 'gzip,deflate',
-            'Accept-Language': 'zh-CN,zh;q=0.9',
-            'Cache-Control': 'max-age=0',
-            'Host': 'serv.vip.iqiyi.com',
-            'Proxy-Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
-            'Cookie': self.iqy_cookie
-        }
+        # user_info_headers = {
+        #     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        #     'Accept-Encoding': 'gzip,deflate',
+        #     'Accept-Language': 'zh-CN,zh;q=0.9',
+        #     'Cache-Control': 'max-age=0',
+        #     'Host': 'serv.vip.iqiyi.com',
+        #     'Proxy-Connection': 'keep-alive',
+        #     'Upgrade-Insecure-Requests': '1',
+        #     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+        #     'Cookie': self.iqy_cookie
+        # }
         user_info_resp = requests.get(url=user_info_url, params=params)
         msg = ''
         resp_json = user_info_resp.json()
@@ -435,19 +547,28 @@ class IQY:
             "P00001": self.P00001,
             "taskCode": "",
             "platform": "bb136ff4276771f3",
-            "lang": "zh_CN"
+            "lang": "zh_CN",
+            "app_lm": "cn"
         }
         self.query_tasks()
         logger.info(f"任务列表：{self.task_list}")
         # 遍历任务，仅做一次
         for item in self.task_list:
-            if item["status"] == 2:
-                params["taskCode"] = item["taskCode"]
-                res = requests.get(url=join_task_url, params=params)
-                logger.info(f"加入任务{item['name']}状态：{res.text}")
+            params["taskCode"] = item["taskCode"]
+            logger.info(f"正在执行{item['name']}...")
+            res = self.req(url=join_task_url, body=params)
+            if res['code'] == 'A00000':
+                logger.debug(f"加入任务{item['name']}响应:{res}")
+                time.sleep(11)
+                logger.info(f"加入任务{item['name']}状态：{res}")
             else:
-                logger.success(f"日常任务{item['name']}加入成功...")
-            # time.sleep(3)
+                logger.error(f"加入任务{item['name']}响应:{res}")
+
+            # 完成任务
+            url = f'https://tc.vip.iqiyi.com/taskCenter/task/notify?taskCode={item["taskCode"]}&P00001={self.P00001}&platform=97ae2982356f69d8&lang=cn&bizSource=component_browse_timing_tasks&_={self.timestamp()}'
+            if res := self.req(url)['code'] == 'A00000':
+                time.sleep(2)
+                logger.debug(f"完成任务{item['name']}响应：{res}")
 
     def get_rewards(self):
         # 获取任务奖励
@@ -462,27 +583,18 @@ class IQY:
         logger.debug(f'可完成的任务：{self.task_list}')
         # 遍历任务，领取奖励
         for item in self.task_list:
-            if item["status"] == 0:
-                params["taskCode"] = item["taskCode"]
-                res = requests.get(url=rewards_url, params=params)
-                logger.debug(res.text)
-                if res.json()["code"] == "A00000":
-                    self.growthTask += item["taskReward"]
-        msg = f"+{self.growthTask}成长值"
+            params["taskCode"] = item["taskCode"]
+            res = self.req(url=rewards_url, body=params)
+            time.sleep(1)
+            logger.debug(f"领取任务{item['name']}状态:{res}")
+            if res["code"] == "A00000":
+                try:
+                    self.growthTask += int(res['data'][0]['成长值'][1])
+                except Exception as e:
+                    logger.warning(e)
+                    pass
+        msg = f"+{self.growthTask}任务成长值"
         logger.info(msg)
-        # if self.push_token:
-        #     push.pushplus(self.push_token, title='爱奇艺领取通知', content=msg)
+        if self.push_token:
+            push.pushplus(self.push_token, title='爱奇艺领取通知', content=msg)
         return msg
-
-
-if __name__ == '__main__':
-    iqy = IQY()
-
-    # iqy.sign_in()
-
-    # iqy.query_tasks()
-
-    iqy.get_rewards()
-
-    info = iqy.get_user_info()
-    print(info)
