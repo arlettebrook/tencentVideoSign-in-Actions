@@ -133,7 +133,7 @@ class TencentVideo:
             login_rsp = self.tencent_video_login()
             login_cookie_dict.update(login_rsp.cookies.get_dict())
             auth_cookie = "; ".join([f"{key}={value}" for key, value in login_cookie_dict.items()])
-            logger.success('auth_cookie:' + auth_cookie)
+            logger.debug('auth_cookie:' + auth_cookie)
             return auth_cookie
         except Exception as e:
             logger.error(e)
@@ -188,7 +188,7 @@ class TencentVideo:
         response = requests.get(url=task_url, headers=task_headers)
         try:
             res = json.loads(response.text)
-            logger.info(f"任务状态详细内容：{res}")
+            logger.debug(f"任务状态详细内容：{res}")
             lis = res["task_list"]
             log = '\n============v力值任务完成状态============'
             for i in lis:
