@@ -168,7 +168,7 @@ class TencentVideo:
         else:
             log = sign_rsp_json['msg']
             logger.error(log)
-        logger.debug('签到状态：' + log)
+        logger.info('签到状态：' + log)
 
         # requests.get('https://sc.ftqq.com/自己的sever酱号.send?text=' + quote('签到积分：' + str(rsp_score)))
         if self.PUSHPLUS_TOKEN:
@@ -188,7 +188,7 @@ class TencentVideo:
         response = requests.get(url=task_url, headers=task_headers)
         try:
             res = json.loads(response.text)
-            logger.debug(f"任务状态详细内容：{res}")
+            logger.info(f"任务状态详细内容：{res}")
             lis = res["task_list"]
             log = '\n============v力值任务完成状态============'
             for i in lis:
@@ -246,7 +246,7 @@ class TencentVideo:
         try:
             res_2 = json.loads(response_2.text)
             log = "\n观看获得v力值:" + str(res_2['provide_value'])
-            logger.debug(f"v力值响应内容：{res_2}")
+            logger.info(f"v力值响应内容：{res_2}")
             logger.success(log)
             return log
         except Exception as e:
@@ -287,7 +287,7 @@ class TencentVideo:
         body = self.get_vip_info_url_payload
         vip_info_rsp = requests.post(get_vip_info_url, data=body, headers=vip_info_headers)
         if vip_info_rsp.status_code == 200:
-            logger.debug("获取会员信息状态：" + vip_info_rsp.text)
+            logger.info("获取会员信息状态：" + vip_info_rsp.text)
             try:
                 res_3 = json.loads(vip_info_rsp.text)
                 log = log + "\n开始时间:" + str(res_3['beginTime']) + "\n到期时间:" + str(
@@ -453,13 +453,24 @@ class IQY:
                 "verticalCode": "iQIYI"
             }
         }
+        info = 'null'
         data = self.req(url, "post", body)
-        logger.debug(f'签到返回信息：{data}')
+        logger.info(f'签到返回信息：{data}')
         if data.get('code') == 'A00000':
-            log = f"签到执行成功, {data['data']['msg']}"
-            logger.success(log)
+            try:
+                msg = data['data']['msg']
+                # msg为None表示成功执行
+                if msg:
+                    info = f"签到执行成功, {msg}"
+                else:
+                    signDays = data['data']['data']['signDays']
+                    rewardCount = data['data']['data']['rewards'][0]['rewardCount']
+                    info = f"签到执行成功, +{rewardCount}签到成长值,已连续签到{signDays}天。"
+                logger.success(info)
+            except Exception as e:
+                logger.error(e)
             if self.push_token:
-                push.pushplus(self.push_token, title="爱奇艺签到通知", content=log)
+                push.pushplus(self.push_token, title="爱奇艺签到通知", content=info)
         else:
             logger.error("签到失败，原因可能是签到接口又又又又改了")
 
@@ -558,7 +569,7 @@ class IQY:
             logger.info(f"正在执行{item['name']}...")
             res = self.req(url=join_task_url, body=params)
             if res['code'] == 'A00000':
-                logger.debug(f"加入任务{item['name']}响应:{res}")
+                logger.info(f"加入任务{item['name']}响应:{res}")
                 time.sleep(11)
                 logger.info(f"加入任务{item['name']}状态：{res}")
             else:
@@ -568,7 +579,7 @@ class IQY:
             url = f'https://tc.vip.iqiyi.com/taskCenter/task/notify?taskCode={item["taskCode"]}&P00001={self.P00001}&platform=97ae2982356f69d8&lang=cn&bizSource=component_browse_timing_tasks&_={self.timestamp()}'
             if res := self.req(url)['code'] == 'A00000':
                 time.sleep(2)
-                logger.debug(f"完成任务{item['name']}响应：{res}")
+                logger.info(f"完成任务{item['name']}响应：{res}")
 
     def get_rewards(self):
         # 获取任务奖励
@@ -580,13 +591,13 @@ class IQY:
             "lang": "zh_CN"
         }
         self.join_task()
-        logger.debug(f'可完成的任务：{self.task_list}')
+        logger.info(f'可完成的任务：{self.task_list}')
         # 遍历任务，领取奖励
         for item in self.task_list:
             params["taskCode"] = item["taskCode"]
             res = self.req(url=rewards_url, body=params)
             time.sleep(1)
-            logger.debug(f"领取任务{item['name']}状态:{res}")
+            logger.info(f"领取任务{item['name']}状态:{res}")
             if res["code"] == "A00000":
                 try:
                     self.growthTask += int(res['data'][0]['成长值'][1])

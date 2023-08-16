@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 
 from loguru import logger
@@ -24,7 +25,10 @@ def run_aqy():
     logger.success("爱奇艺任务已完成")
 
 
-def main():
+def main(log_level):
+    logger.remove()
+    logger.add(sys.stderr, level=log_level)
+
     try:
         logger.success("autoCheck-in启动成功")
         if os.getenv('LOGIN_COOKIE'):
@@ -39,4 +43,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(os.getenv('LOG_LEVEL', 'INFO'))
