@@ -426,9 +426,10 @@ class IQY:
         if data.get("code") == 'A00000':
             self.uid = data['data']['userinfo']['pru']
         else:
-            logger.warning("请求api失败 最大可能是cookie失效了 也可能是网络问题")
+            info = f"请求api失败 最大可能是cookie失效了 也可能是网络问题:getUid响应:{data}"
+            logger.error(info)
             if self.push_token:
-                push.pushplus(self.push_token, content="爱奇艺每日任务: 请求api失败 最大可能是cookie失效了 也可能是网络问题")
+                push.pushplus(self.push_token, content="爱奇艺每日任务:" + info)
             exit(-1)
 
     def get_check_in_url(self):
