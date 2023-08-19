@@ -22,6 +22,7 @@ def run_aqy():
 
 
 def main(log_level):
+    logger.info(f"将使用{log_level}级别日志")
     logger.remove()
     logger.add(sys.stderr, level=log_level)
 
