@@ -171,7 +171,7 @@ class TencentVideo:
         logger.info('签到状态：' + log)
 
         info = self.tencent_video_get_vip_info(auth_cookies)
-        log = info + f"\n{log}"
+        log = info + f"\n签到任务状态：{log}"
         logger.debug(log)
         # requests.get('https://sc.ftqq.com/自己的sever酱号.send?text=' + quote('签到积分：' + str(rsp_score)))
         if self.PUSHPLUS_TOKEN:
@@ -468,7 +468,7 @@ class IQY:
                 else:
                     signDays = data['data']['data']['signDays']
                     rewardCount = data['data']['data']['rewards'][0]['rewardCount']
-                    info = f"签到执行成功, +{rewardCount}签到成长值,已连续签到{signDays}天。"
+                    info = f"签到执行成功, +{rewardCount}签到成长值,连续签到{signDays}天。"
                 logger.success(info)
             except Exception as e:
                 logger.error(e)
@@ -479,6 +479,7 @@ class IQY:
             logger.error("签到失败，原因可能是签到接口又又又又改了")
 
     def get_user_info(self):
+        now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         check_in = self.check_in()
         time.sleep(3)
         task_rewards = self.get_rewards()
@@ -514,7 +515,7 @@ class IQY:
                 deadline = res_data["deadline"]
                 # 今日成长值
                 todayGrowthValue = res_data["todayGrowthValue"]
-                msg = f"\n==========爱奇艺会员信息==========\nVIP等级：{level}\n当前成长值：{growthvalue}\n升级需成长值：{distance}\n今日成长值:  +{todayGrowthValue}\nVIP到期时间:{deadline}"
+                msg = f"\n==========爱奇艺会员信息==========\n{now}\nVIP等级：{level}\n当前成长值：{growthvalue}\n升级需成长值：{distance}\n今日成长值:  +{todayGrowthValue}\nVIP到期时间:{deadline}"
                 logger.success("爱奇艺获取会员信息成功")
             except Exception as e:
                 logger.warning(resp_json)
@@ -522,7 +523,7 @@ class IQY:
         else:
             msg = '爱奇艺获取会员信息失败：' + str(resp_json)
             logger.error(msg)
-        msg = msg + f"\n----------爱奇艺任务状态----------\n签到任务状态：{check_in}\n日常任务状态：{task_rewards}"
+        msg = msg + f"\n---------------爱奇艺任务状态---------------\n签到：{check_in}\n日常任务：{task_rewards}"
         logger.info(msg)
         if self.push_token:
             push.pushplus(self.push_token, title='爱奇艺会员信息通知', content=msg)
@@ -613,7 +614,7 @@ class IQY:
                 except Exception as e:
                     logger.warning(e)
                     pass
-        msg = f"+{self.growthTask}任务成长值"
+        msg = f"日常任务执行成功，+{self.growthTask}日常任务成长值"
         logger.info(msg)
         # if self.push_token:
         #     push.pushplus(self.push_token, title='爱奇艺领取通知', content=msg)
