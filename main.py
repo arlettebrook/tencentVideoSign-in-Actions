@@ -17,10 +17,6 @@ def run_tvd():
 def run_aqy():
     iqy = IQY()
     logger.success("爱奇艺任务启动成功")
-    iqy.check_in()
-    time.sleep(3)
-    iqy.get_rewards()
-    time.sleep(10)
     iqy.get_user_info()
     logger.success("爱奇艺任务已完成")
 

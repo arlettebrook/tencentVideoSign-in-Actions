@@ -170,10 +170,12 @@ class TencentVideo:
             logger.error(log)
         logger.info('签到状态：' + log)
 
+        info = self.tencent_video_get_vip_info(auth_cookies)
+        log = info + f"\n{log}"
+        logger.debug(log)
         # requests.get('https://sc.ftqq.com/自己的sever酱号.send?text=' + quote('签到积分：' + str(rsp_score)))
         if self.PUSHPLUS_TOKEN:
-            push.pushplus(title="腾讯视频签到提醒", content=log, token=self.PUSHPLUS_TOKEN)
-        self.tencent_video_get_vip_info(auth_cookies)
+            push.pushplus(title="腾讯视频自动签到通知", content=log, token=self.PUSHPLUS_TOKEN)
 
     @staticmethod
     def tencent_video_task_status(auth_cookies):
@@ -311,9 +313,9 @@ class TencentVideo:
                     logger.warning(log)
                     logger.exception(e)
                     return log
-            finally:
-                if self.PUSHPLUS_TOKEN:
-                    push.pushplus(title="腾讯视频会员信息", content=log, token=self.PUSHPLUS_TOKEN)
+            # finally:
+            # if self.PUSHPLUS_TOKEN:
+            #     push.pushplus(title="腾讯视频会员信息", content=log, token=self.PUSHPLUS_TOKEN)
         else:
             e = "获取会员信息响应失败"
             logger.error(e)
@@ -470,12 +472,17 @@ class IQY:
                 logger.success(info)
             except Exception as e:
                 logger.error(e)
-            if self.push_token:
-                push.pushplus(self.push_token, title="爱奇艺签到通知", content=info)
+            # if self.push_token:
+            #     push.pushplus(self.push_token, title="爱奇艺签到通知", content=info)
+            return info
         else:
             logger.error("签到失败，原因可能是签到接口又又又又改了")
 
     def get_user_info(self):
+        check_in = self.check_in()
+        time.sleep(3)
+        task_rewards = self.get_rewards()
+        time.sleep(10)
         user_info_url = "http://serv.vip.iqiyi.com/vipgrowth/query.action"
         params = {
             "P00001": self.P00001,
@@ -515,6 +522,7 @@ class IQY:
         else:
             msg = '爱奇艺获取会员信息失败：' + str(resp_json)
             logger.error(msg)
+        msg = msg + f"\n----------爱奇艺任务状态----------\n签到任务状态：{check_in}\n日常任务状态：{task_rewards}"
         logger.info(msg)
         if self.push_token:
             push.pushplus(self.push_token, title='爱奇艺会员信息通知', content=msg)
@@ -607,6 +615,6 @@ class IQY:
                     pass
         msg = f"+{self.growthTask}任务成长值"
         logger.info(msg)
-        if self.push_token:
-            push.pushplus(self.push_token, title='爱奇艺领取通知', content=msg)
+        # if self.push_token:
+        #     push.pushplus(self.push_token, title='爱奇艺领取通知', content=msg)
         return msg
