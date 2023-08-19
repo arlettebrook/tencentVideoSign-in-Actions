@@ -1,10 +1,10 @@
-
 # -*- coding: utf8 -*-
 # 爱奇艺（IQIYI）官网，加载主页面，
 # 开发者工具搜索获取P00001，P00003参数
 # skey 为酷推 密钥，绑定发送qq
 # 修改200、201、202行代码，其中202行的skey是酷推的skey。200和201行是获取Cookie中的P0001和P0003
 import time
+
 import requests
 
 
@@ -73,7 +73,7 @@ class IQY:
                     "data"]["signInfo"]["data"]["rewardMap"]["growth"]
                 continueSignDaysSum = res.json(
                 )["data"]["signInfo"]["data"]["continueSignDaysSum"]
-                #vipStatus = res.json()["data"]["userInfo"]["vipStatus"]
+                # vipStatus = res.json()["data"]["userInfo"]["vipStatus"]
                 rewardDay = 7 if continueSignDaysSum % 28 <= 7 else (
                     14 if continueSignDaysSum % 28 <= 14 else 28)
                 rouund_day = 28 if continueSignDaysSum % 28 == 0 else continueSignDaysSum % 28
@@ -171,7 +171,7 @@ class IQY:
             "psp_status": 3,
             "secure_v": 1,
             "secure_p": "GPhone",
-            "req_sn": round(time.time()*1000)
+            "req_sn": round(time.time() * 1000)
         }
         # 抽奖删除lottery_chance参数
         if type == 1:

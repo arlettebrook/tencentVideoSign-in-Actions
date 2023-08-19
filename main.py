@@ -40,4 +40,4 @@ def main(log_level):
 
 
 if __name__ == '__main__':
-    main(os.getenv('LOG_LEVEL', 'INFO'))
+    main(os.getenv('LOG_LEVEL') or "INFO")
