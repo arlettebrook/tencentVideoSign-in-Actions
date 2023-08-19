@@ -515,7 +515,7 @@ class IQY:
                 deadline = res_data["deadline"]
                 # 今日成长值
                 todayGrowthValue = res_data["todayGrowthValue"]
-                msg = f"\n==========爱奇艺会员信息==========\n{now}\nVIP等级：{level}\n当前成长值：{growthvalue}\n升级需成长值：{distance}\n今日成长值:  +{todayGrowthValue}\nVIP到期时间:{deadline}"
+                msg = f"\n--------------爱奇艺会员信息--------------\n{now}\nVIP等级：{level}\n当前成长值：{growthvalue}\n升级需成长值：{distance}\n今日成长值:  +{todayGrowthValue}\nVIP到期时间:{deadline}"
                 logger.success("爱奇艺获取会员信息成功")
             except Exception as e:
                 logger.warning(resp_json)
@@ -523,7 +523,7 @@ class IQY:
         else:
             msg = '爱奇艺获取会员信息失败：' + str(resp_json)
             logger.error(msg)
-        msg = msg + f"\n---------------爱奇艺任务状态---------------\n签到：{check_in}\n日常任务：{task_rewards}"
+        msg = msg + f"\n=============爱奇艺任务状态=============\n签到：{check_in}\n日常任务：{task_rewards}"
         logger.info(msg)
         if self.push_token:
             push.pushplus(self.push_token, title='爱奇艺会员信息通知', content=msg)
