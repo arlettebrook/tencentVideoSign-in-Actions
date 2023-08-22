@@ -172,7 +172,6 @@ class TencentVideo:
 
         info = self.tencent_video_get_vip_info(auth_cookies)
         log = info + f"\n签到任务状态：{log}"
-        logger.debug(log)
         # requests.get('https://sc.ftqq.com/自己的sever酱号.send?text=' + quote('签到积分：' + str(rsp_score)))
         if self.PUSHPLUS_TOKEN:
             push.pushplus(title="腾讯视频自动签到通知", content=log, token=self.PUSHPLUS_TOKEN)
@@ -521,12 +520,12 @@ class IQY:
                 logger.warning(resp_json)
                 logger.error(e)
         else:
-            msg = '爱奇艺获取会员信息失败：' + str(resp_json)
+            msg = '\n爱奇艺获取会员信息失败：' + str(resp_json)
             logger.error(msg)
-        msg = msg + f"\n=============爱奇艺任务状态=============\n签到：{check_in}\n日常任务：{task_rewards}"
+        msg = f"\n=============爱奇艺任务状态=============\n签到：{check_in}\n日常任务：{task_rewards}" + msg
         logger.info(msg)
         if self.push_token:
-            push.pushplus(self.push_token, title='爱奇艺会员信息通知', content=msg)
+            push.pushplus(self.push_token, title='爱奇艺自动签到通知', content=msg)
         return msg
 
     def sign_in(self):
