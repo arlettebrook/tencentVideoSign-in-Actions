@@ -23,7 +23,8 @@ def pushplus(token, title='Notifications', content='', template='txt'):
         if loads['code'] != 200:
             logger.error("PUSHPLUS_TOKEN:" + loads['msg'])
         else:
-            logger.info(title + ":消息发送成功-" + loads['msg'])
+            logger.info(title + ":推送消息发送成功-" + loads['msg'])
             return loads
     else:
         logger.warning("建议配置PUSHPLUS_TOKEN，开启消息通知。")
+        logger.error('通知消息发送失败。')
