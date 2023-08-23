@@ -31,8 +31,8 @@ def run_aqy():
 
 
 def run_tb():
-    tb = Tieba()
     logger.success("贴吧任务签到成功")
+    tb = Tieba()
     return tb.check_in()
 
 
@@ -46,17 +46,22 @@ def main(log_level):
     logger.add(sys.stderr, level=log_level)
     notice = ''
     push_token = _get_push_token()
+    num = 0
     try:
         logger.success("autoCheck-in启动成功")
         if os.getenv('LOGIN_COOKIE'):
             notice += run_tvd()
             logger.success("腾讯视频任务已完成")
+            num += 1
         if os.getenv("IQY_COOKIE"):
             notice += run_aqy()
             logger.success("爱奇艺任务已完成")
+            num += 1
         if os.getenv('BDUSS'):
             notice += run_tb()
             logger.success("贴吧任务已完成")
+            num += 1
+        notice = f'{num}个任务执行了，结果如下：\n'+notice
         logger.info(notice)
         send_notice(push_token, notice)
         logger.info("所有任务已完成")
