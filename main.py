@@ -49,13 +49,13 @@ def main(log_level):
     try:
         logger.success("autoCheck-in启动成功")
         if os.getenv('LOGIN_COOKIE'):
-            notice = +run_tvd()
+            notice += run_tvd()
             logger.success("腾讯视频任务已完成")
         if os.getenv("IQY_COOKIE"):
-            notice = +run_aqy()
+            notice += +run_aqy()
             logger.success("爱奇艺任务已完成")
         if os.getenv('BDUSS'):
-            notice = +run_tb()
+            notice += +run_tb()
             logger.success("贴吧任务已完成")
         logger.info(notice)
         send_notice(push_token, notice)
