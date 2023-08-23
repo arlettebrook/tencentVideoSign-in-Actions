@@ -37,7 +37,7 @@ def run_tb():
 
 
 def send_notice(push_token, notice):
-    push.pushplus(push_token, title='autoCheck-in任务通知', content=notice)
+    push.pushplus(push_token, title='任务通知:autoCheck-in', content=notice)
 
 
 def main(log_level):

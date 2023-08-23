@@ -172,7 +172,7 @@ class TencentVideo:
         logger.info('签到状态：' + log)
 
         info = self.tencent_video_get_vip_info(auth_cookies)
-        log = info + f"\n签到任务状态：{log}"
+        log = info + f"\n签到任务状态：{log}\n"
         # requests.get('https://sc.ftqq.com/自己的sever酱号.send?text=' + quote('签到积分：' + str(rsp_score)))
         # if self.PUSHPLUS_TOKEN:
         #     push.pushplus(title="腾讯视频自动签到通知", content=log, token=self.PUSHPLUS_TOKEN)
@@ -516,7 +516,7 @@ class IQY:
                 deadline = res_data["deadline"]
                 # 今日成长值
                 todayGrowthValue = res_data["todayGrowthValue"]
-                msg = f"\n--------------爱奇艺会员信息--------------\n{now}\nVIP等级：{level}\n当前成长值：{growthvalue}\n升级需成长值：{distance}\n今日成长值:  +{todayGrowthValue}\nVIP到期时间:{deadline}"
+                msg = f"\n--------------爱奇艺会员信息--------------\n{now}\nVIP等级：{level}\n当前成长值：{growthvalue}\n升级需成长值：{distance}\n今日成长值:  +{todayGrowthValue}\nVIP到期时间:{deadline}\n"
                 logger.success("爱奇艺获取会员信息成功")
             except Exception as e:
                 logger.warning(resp_json)
@@ -699,7 +699,7 @@ class Tieba:
             content = check_in_rsp.json()
             if content['error_code'] == '0':
                 logger.success(f"执行{item['forum_name']}签到成功")
-                num = + 1
+                num += 1
             else:
                 logger.warning(f"执行{item['forum_name']}签到失败，失败消息：{content}")
 
@@ -727,6 +727,6 @@ class Tieba:
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         count = len(self.checked_in_list) + len(self.check_in_list)
         info = f'\n-------------贴吧签到任务情况-------------\n{now}\n共关注{count}个吧~\n' \
-               f'今日还剩{len(self.check_in_list)}个吧未签到~\n通过自动任务成功签到{num}个吧~\n还剩{len(self.check_in_list) - num}个吧未签到~'
+               f'今日还剩{len(self.check_in_list)}个吧未签到~\n通过自动任务成功签到{num}个吧~\n还剩{len(self.check_in_list) - num}个吧未签到~\n'
         logger.info(info)
         return info
