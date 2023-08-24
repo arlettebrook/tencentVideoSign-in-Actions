@@ -58,7 +58,6 @@ class TencentVideo:
     def _exit(self, e):
         logger.error(e)
         push.pushplus(token=self.PUSHPLUS_TOKEN, content=e)
-        exit(-1)
 
     def _get_login_cookie(self):
         login_cookie = os.getenv('LOGIN_COOKIE')
@@ -66,7 +65,7 @@ class TencentVideo:
             logger.success("LOGIN_COOKIE已配置")
             return login_cookie
         else:
-            self._exit("LOGIN_COOKIE未配置，程序已退出。")
+            self._exit("LOGIN_COOKIE未配置，任务未完成。")
 
     def _get_login_url(self):
         login_url = os.getenv('LOGIN_URL')
@@ -74,7 +73,7 @@ class TencentVideo:
             logger.success("LOGIN_URL已配置")
             return login_url
         else:
-            self._exit("LOGIN_URL未配置，程序已退出")
+            self._exit("LOGIN_URL未配置，任务未完成.")
 
     def load_cookie_dict_from_str(self):
         try:
@@ -94,7 +93,6 @@ class TencentVideo:
             return cookie_dict
         except Exception as e:
             logger.error(e)
-            exit(-1)
 
     def tencent_video_login(self):
         login_headers = {
@@ -126,7 +124,6 @@ class TencentVideo:
                 logger.error("登录失败：" + login_rsp.text)
         except Exception as e:
             logger.exception("可能是请求出错" + e.__str__())
-            exit(-1)
 
     def get_cookies(self):
         try:
@@ -138,7 +135,6 @@ class TencentVideo:
             return auth_cookie
         except Exception as e:
             logger.error(e)
-            exit(-1)
 
     def tencent_video_sign_in(self):
         auth_cookies = self.get_cookies()
@@ -433,14 +429,12 @@ class IQY:
             logger.error(info)
             if self.push_token:
                 push.pushplus(self.push_token, content="爱奇艺每日任务:" + info)
-            exit(-1)
 
     def get_check_in_url(self):
         time_stamp = self.timestamp()
         self.getUid()
         if self.uid == "":
             logger.error("获取用户id失败 可能为cookie设置错误或者网络异常,请重试或者检查cookie")
-            exit(0)
         data = f'agentType=1|agentversion=1|appKey=basic_pcw|authCookie={self.P00001}|qyid={self.qyid}|task_code=natural_month_sign|timestamp={time_stamp}|typeCode=point|userId={self.uid}|UKobMjDMsDoScuWOfp6F'
         url = f'https://community.iqiyi.com/openApi/task/execute?agentType=1&agentversion=1&appKey=basic_pcw&authCookie={self.P00001}&qyid={self.qyid}&sign={self.md5(data)}&task_code=natural_month_sign&timestamp={time_stamp}&typeCode=point&userId={self.uid}'
         return url
@@ -478,6 +472,7 @@ class IQY:
             return info
         else:
             logger.error("签到失败，原因可能是签到接口又又又又改了")
+            return f'签到返回信息：{data}'
 
     def get_user_info(self):
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -652,7 +647,6 @@ class Tieba:
             return content['tbs']
         else:
             logger.error('获取tbs失败，用户未登录成功。')
-            exit(-1)
 
     @logger.catch
     # 获取用户所关注的贴吧列表
@@ -670,8 +664,8 @@ class Tieba:
                 else:
                     self.checked_in_list.append(item)
 
-            logger.debug(f'未签到列表：{self.check_in_list}')
-            logger.info(f'签到列表：{self.checked_in_list}')
+        logger.debug(f'签到列表：{self.check_in_list}')
+        logger.info(f'未签到列表：共{len(self.check_in_list)}个-{self.check_in_list}')
 
     @logger.catch
     def check_in(self):
@@ -680,7 +674,7 @@ class Tieba:
         SIGN_URL = "http://c.tieba.baidu.com/c/c/forum/sign"
         num = 0
         for item in self.check_in_list:
-            logger.info(f"开始签到{item['forum_name']}")
+            logger.info(f"正在签到{item['forum_name']}吧...")
             SIGN_DATA = {
                 '_client_type': '2',
                 '_client_version': '9.7.8.0',
@@ -695,13 +689,13 @@ class Tieba:
             }
             data = self.encodeByMd5(SIGN_DATA)
             check_in_rsp = self.session.post(url=SIGN_URL, headers=self.headers, data=data)
-            logger.debug(f"执行{item['forum_name']}签到，响应：{check_in_rsp.text}")
+            logger.debug(f"执行{item['forum_name']}吧签到，响应：{check_in_rsp.text}")
             content = check_in_rsp.json()
             if content['error_code'] == '0':
-                logger.success(f"执行{item['forum_name']}签到成功")
+                logger.success(f"执行{item['forum_name']}吧签到成功")
                 num += 1
             else:
-                logger.warning(f"执行{item['forum_name']}签到失败，失败消息：{content}")
+                logger.warning(f"执行{item['forum_name']}吧签到失败，失败消息：{content}")
 
             time.sleep(random.randint(1, 5))
         return self.notice(num)
