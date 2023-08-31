@@ -213,7 +213,11 @@ class TencentVideo:
         }
         score_resp = requests.get(get_score_url, headers=score_headers)
         try:
-            qq_nick = re.search(r"qq_nick=([^\n;]*);", auth_cookies).group(1)
+            try:
+                qq_nick = re.search(r"qq_nick=([^\n;]*);", auth_cookies).group(1)
+            except Exception as e:
+                qq_nick = "Null"
+                logger.warning(f"用户名获取失败:{e}")
             res_3 = json.loads(score_resp.text)
             log = log + "\n用户：" + qq_nick + "\n会员等级:" + str(res_3['lscore_info']['level']) + "\n积分:" + str(
                 res_3['cscore_info']['vip_score_total']) + "\nV力值:" + str(res_3['lscore_info']['score'])
