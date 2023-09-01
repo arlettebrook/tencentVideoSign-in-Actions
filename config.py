@@ -92,7 +92,7 @@ class TencentVideo:
             logger.debug('cookie_dict=' + str(cookie_dict))
             return cookie_dict
         except Exception as e:
-            logger.error(e)
+            logger.exception(e)
 
     def tencent_video_login(self):
         login_headers = {
@@ -116,7 +116,6 @@ class TencentVideo:
             body = self.login_url_payload
             login_rsp = requests.post(url=self.login_url, data=body, headers=login_headers)
             if login_rsp.status_code == 200:
-                logger.success("登录成功")
                 logger.debug("登录数据：" + login_rsp.text)
                 logger.debug(f"获取到的cookies：{login_rsp.cookies}", )
                 return login_rsp
@@ -134,7 +133,7 @@ class TencentVideo:
             logger.debug('auth_cookie:' + auth_cookie)
             return auth_cookie
         except Exception as e:
-            logger.error(e)
+            logger.exception(e)
 
     def tencent_video_sign_in(self):
         auth_cookies = self.get_cookies()
@@ -168,7 +167,7 @@ class TencentVideo:
                 logger.error(log)
             logger.info('签到状态：' + log)
         except Exception as e:
-            log = f"腾讯视频签到失败,可能原因：登录失败-签到响应内容为空{e}"
+            log = f"腾讯视频签到失败,可能原因：登录失败-签到响应内容为空-{e}"
             logger.error(log)
 
         info = self.tencent_video_get_vip_info(auth_cookies)
@@ -324,10 +323,10 @@ class TencentVideo:
                 #     push.pushplus(title="腾讯视频会员信息", content=log, token=self.PUSHPLUS_TOKEN)
             else:
                 e = "获取会员信息响应失败"
-                logger.error(e)
+                logger.exception(e)
                 self._exit(e)
         except Exception as e:
-            logger.error(e)
+            logger.exception(e)
             return e.__str__()
 
 
@@ -361,7 +360,7 @@ class IQY:
             self.P00001 = re.search(r"P00001=(.*?);", self.iqy_cookie).group(1)
             self.dfp = re.search(r'__dfp=(.*?)@', self.iqy_cookie).group(1)
         except Exception as e:
-            logger.error(e)
+            logger.exception(e)
         self.session = Session()
         self.headers = {
             "User-Agent": self.user_agent,
@@ -404,7 +403,7 @@ class IQY:
                 data = self.session.get(url, headers=self.headers, params=body).json()
             except Exception as e:
                 logger.error("请求发送失败,可能为网络异常")
-                logger.error(e)
+                logger.exception(e)
             #     data = self.session.get(url, headers=self.headers, params=body).text
             return data
         elif req_method.upper() == "POST":
@@ -412,7 +411,7 @@ class IQY:
                 data = self.session.post(url, headers=self.headers, data=json.dumps(body)).json()
             except Exception as e:
                 logger.error("请求发送失败,可能为网络异常")
-                logger.error(e)
+                logger.exception(e)
             #     data = self.session.post(url, headers=self.headers, data=dumps(body)).text
             return data
         elif req_method.upper() == "OTHER":
@@ -420,7 +419,7 @@ class IQY:
                 self.session.get(url, headers=self.headers, params=json.dumps(body))
             except Exception as e:
                 logger.error("请求发送失败,可能为网络异常")
-                logger.error(e)
+                logger.exception(e)
         else:
             logger.error("您当前使用的请求方式有误,请检查")
 
@@ -478,7 +477,7 @@ class IQY:
                     info = f"签到执行成功, +{rewardCount}签到成长值,连续签到{signDays}天。"
                 logger.success(info)
             except Exception as e:
-                logger.error(e)
+                logger.exception(e)
             # if self.push_token:
             #     push.pushplus(self.push_token, title="爱奇艺签到通知", content=info)
             return info
@@ -527,7 +526,7 @@ class IQY:
                 logger.success("爱奇艺获取会员信息成功")
             except Exception as e:
                 logger.warning(resp_json)
-                logger.error(e)
+                logger.exception(e)
         else:
             msg = '\n爱奇艺获取会员信息失败：' + str(resp_json)
             logger.error(msg)
