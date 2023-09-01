@@ -167,6 +167,7 @@ class TencentVideo:
                 logger.error(log)
             logger.info('签到状态：' + log)
         except Exception as e:
+            logger.exception(e)
             log = f"腾讯视频签到失败,可能原因：登录失败-签到响应内容为空-{e}"
             logger.error(log)
 
