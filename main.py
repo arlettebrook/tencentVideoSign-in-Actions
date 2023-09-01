@@ -8,7 +8,6 @@ import push
 from config import TencentVideo, IQY, Tieba
 
 
-@logger.catch
 def _get_push_token():
     push_token = os.getenv('PUSHPLUS_TOKEN')
     if push_token:
@@ -19,33 +18,28 @@ def _get_push_token():
         return None
 
 
-@logger.catch
 def run_tvd():
     tencentVideo = TencentVideo()
     logger.success("腾讯视频自动签到启动成功")
     return tencentVideo.tencent_video_sign_in()
 
 
-@logger.catch
 def run_aqy():
     iqy = IQY()
     logger.success("爱奇艺任务启动成功")
     return iqy.get_user_info()
 
 
-@logger.catch
 def run_tb():
     logger.success("贴吧任务签到成功")
     tb = Tieba()
     return tb.check_in()
 
 
-@logger.catch
 def send_notice(push_token, notice):
     push.pushplus(push_token, title='任务通知:autoCheck-in', content=notice)
 
 
-@logger.catch
 def main(log_level):
     logger.info(f"将使用{log_level}级别日志")
     logger.remove()

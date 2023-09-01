@@ -148,13 +148,13 @@ class TencentVideo:
             'Accept-Encoding': 'gzip, deflate, br',
             "Cookie": auth_cookies
         }
-        sign_rsp = requests.get(url=sign_in_url, headers=sign_headers)
-
-        logger.debug("签到响应内容：" + sign_rsp.text)
-
-        sign_rsp_json = sign_rsp.json()
-
         try:
+            sign_rsp = requests.get(url=sign_in_url, headers=sign_headers)
+
+            logger.debug("签到响应内容：" + sign_rsp.text)
+
+            sign_rsp_json = sign_rsp.json()
+
             if sign_rsp_json['ret'] == 0:
                 score = sign_rsp_json['check_in_score']
                 if score == '0':
