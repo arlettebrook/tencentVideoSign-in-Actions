@@ -154,18 +154,22 @@ class TencentVideo:
 
         sign_rsp_json = sign_rsp.json()
 
-        if sign_rsp_json['ret'] == 0:
-            score = sign_rsp_json['check_in_score']
-            if score == '0':
+        try:
+            if sign_rsp_json['ret'] == 0:
+                score = sign_rsp_json['check_in_score']
+                if score == '0':
+                    log = f'Cookie有效!当天已签到'
+                else:
+                    log = f'Cookie有效!签到成功,获得经验值{score}'
+            elif sign_rsp_json['ret'] == -2002:
                 log = f'Cookie有效!当天已签到'
             else:
-                log = f'Cookie有效!签到成功,获得经验值{score}'
-        elif sign_rsp_json['ret'] == -2002:
-            log = f'Cookie有效!当天已签到'
-        else:
-            log = sign_rsp_json['msg']
+                log = sign_rsp_json['msg']
+                logger.error(log)
+            logger.info('签到状态：' + log)
+        except Exception as e:
+            log = f"腾讯视频签到失败,可能原因：登录失败-签到响应内容为空{e}"
             logger.error(log)
-        logger.info('签到状态：' + log)
 
         info = self.tencent_video_get_vip_info(auth_cookies)
         log = info + f"\n签到任务状态：{log}\n"
@@ -266,61 +270,65 @@ class TencentVideo:
                 return log
 
     def tencent_video_get_vip_info(self, auth_cookies):
-        log = self.tencent_video_get_score(auth_cookies)
-        log_status = self.tencent_video_task_status(auth_cookies) + self.tencent_video_get_look(auth_cookies)
+        try:
+            log = self.tencent_video_get_score(auth_cookies)
+            log_status = self.tencent_video_task_status(auth_cookies) + self.tencent_video_get_look(auth_cookies)
 
-        vip_info_headers = {
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'zh-CN,zh;q=0.9',
-            'Content-Length': '46',
-            'Content-Type': 'text/plain;charset=UTF-8',
-            'Origin': 'https://film.qq.com',
-            'Referer': 'https://film.qq.com/vip/my/',
-            'sec-ch-ua': '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-site',
-            'Cookie': auth_cookies,
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
-        }
-        get_vip_info_url = 'https://vip.video.qq.com/rpc/trpc.query_vipinfo.vipinfo.QueryVipInfo/GetVipUserInfoH5'
-        body = self.get_vip_info_url_payload
-        vip_info_rsp = requests.post(get_vip_info_url, data=body, headers=vip_info_headers)
-        if vip_info_rsp.status_code == 200:
-            logger.info("获取会员信息状态：" + vip_info_rsp.text)
-            try:
-                res_3 = json.loads(vip_info_rsp.text)
-                log = log + "\n开始时间:" + str(res_3['beginTime']) + "\n到期时间:" + str(
-                    res_3['endTime'])
-                if res_3['endmsg'] != '':
-                    log = log + '\nendmsg:' + res_3['endmsg']
-                log += log_status
-                logger.success(log)
-                return log
-            except Exception as e:
+            vip_info_headers = {
+                'Accept': '*/*',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'zh-CN,zh;q=0.9',
+                'Content-Length': '46',
+                'Content-Type': 'text/plain;charset=UTF-8',
+                'Origin': 'https://film.qq.com',
+                'Referer': 'https://film.qq.com/vip/my/',
+                'sec-ch-ua': '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
+                'Sec-Fetch-Dest': 'empty',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Site': 'same-site',
+                'Cookie': auth_cookies,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+            }
+            get_vip_info_url = 'https://vip.video.qq.com/rpc/trpc.query_vipinfo.vipinfo.QueryVipInfo/GetVipUserInfoH5'
+            body = self.get_vip_info_url_payload
+            vip_info_rsp = requests.post(get_vip_info_url, data=body, headers=vip_info_headers)
+            if vip_info_rsp.status_code == 200:
+                logger.info("获取会员信息状态：" + vip_info_rsp.text)
                 try:
                     res_3 = json.loads(vip_info_rsp.text)
-                    log = log + "\n腾讯视频领获取积分异常,返回内容:\n" + str(res_3)
+                    log = log + "\n开始时间:" + str(res_3['beginTime']) + "\n到期时间:" + str(
+                        res_3['endTime'])
+                    if res_3['endmsg'] != '':
+                        log = log + '\nendmsg:' + res_3['endmsg']
                     log += log_status
-                    logger.warning(log)
-                    logger.exception(e)
+                    logger.success(log)
                     return log
                 except Exception as e:
-                    log = log + "\n腾讯视频获取积分异常,无法返回内容"
-                    log += log_status
-                    logger.warning(log)
-                    logger.exception(e)
-                    return log
-            # finally:
-            # if self.PUSHPLUS_TOKEN:
-            #     push.pushplus(title="腾讯视频会员信息", content=log, token=self.PUSHPLUS_TOKEN)
-        else:
-            e = "获取会员信息响应失败"
+                    try:
+                        res_3 = json.loads(vip_info_rsp.text)
+                        log = log + "\n腾讯视频领获取积分异常,返回内容:\n" + str(res_3)
+                        log += log_status
+                        logger.warning(log)
+                        logger.exception(e)
+                        return log
+                    except Exception as e:
+                        log = log + "\n腾讯视频获取积分异常,无法返回内容"
+                        log += log_status
+                        logger.warning(log)
+                        logger.exception(e)
+                        return log
+                # finally:
+                # if self.PUSHPLUS_TOKEN:
+                #     push.pushplus(title="腾讯视频会员信息", content=log, token=self.PUSHPLUS_TOKEN)
+            else:
+                e = "获取会员信息响应失败"
+                logger.error(e)
+                self._exit(e)
+        except Exception as e:
             logger.error(e)
-            self._exit(e)
+            return e.__str__()
 
 
 class IQY:
