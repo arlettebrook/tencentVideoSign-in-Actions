@@ -486,6 +486,7 @@ class IQY:
             logger.error("签到失败，原因可能是签到接口又又又又改了")
             return f'签到返回信息：{data}'
 
+    @logger.catch
     def get_user_info(self):
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         check_in = self.check_in()
