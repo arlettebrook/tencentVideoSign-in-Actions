@@ -69,10 +69,10 @@ def main():
     for task, task_name in tasks:
         try:
             result = task()
-            notice += f"{task_name}已完成\n{result}\n"
+            notice += f"\n{task_name}:\n{result}\n"
             logger.success(f"{task_name}已完成")
         except Exception as e:
-            notice += f"{task_name}未完成\n{result}\n"
+            notice += f"\n{task_name}未完成\n{result}\n"
             logger.error(f"{task_name}未完成！")
             logger.exception(e)
 
