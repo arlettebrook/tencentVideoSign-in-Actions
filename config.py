@@ -173,6 +173,7 @@ class TencentVideo:
 
         info = self.tencent_video_get_vip_info(auth_cookies)
         log = info + f"\n签到任务状态：{log}\n"
+        logger.info(log)
         # requests.get('https://sc.ftqq.com/自己的sever酱号.send?text=' + quote('签到积分：' + str(rsp_score)))
         # if self.PUSHPLUS_TOKEN:
         #     push.pushplus(title="腾讯视频自动签到通知", content=log, token=self.PUSHPLUS_TOKEN)
@@ -303,7 +304,7 @@ class TencentVideo:
                     if res_3['endmsg'] != '':
                         log = log + '\nendmsg:' + res_3['endmsg']
                     log += log_status
-                    logger.success(log)
+                    logger.success('成功获取腾讯视频会员信息！')
                     return log
                 except Exception as e:
                     try:
