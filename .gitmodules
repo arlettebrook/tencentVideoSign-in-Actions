@@ -1,0 +1,3 @@
+[submodule "autoCheck-in"]
+	path = autoCheck-in
+	url = https://github.com/Arlettebrook/autoCheck-in.git
