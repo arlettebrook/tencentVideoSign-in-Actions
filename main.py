@@ -5,7 +5,7 @@ import time
 from loguru import logger
 
 import push
-from config import TencentVideo, IQY, Tieba
+from config import TencentVideo, IQY, Tieba, IQY2
 
 
 def get_push_token():
@@ -25,9 +25,9 @@ def run_tvd():
 
 
 def run_aqy():
-    iqy = IQY()
+    iqy = IQY2()
     logger.success("爱奇艺任务启动成功")
-    return iqy.get_user_info()
+    return iqy.main()
 
 
 def run_tb():
