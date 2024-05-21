@@ -494,7 +494,7 @@ class IQY:
     @logger.catch
     def get_user_info(self):
         now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        check_in = self.check_in()
+        # check_in = self.check_in()
         time.sleep(3)
         task_rewards = self.get_rewards()
         time.sleep(10)
@@ -537,7 +537,7 @@ class IQY:
         else:
             msg = '\n爱奇艺获取会员信息失败：' + str(resp_json)
             logger.error(msg)
-        msg = f"\n=============爱奇艺任务状态=============\n签到：{check_in}\n日常任务：{task_rewards}" + msg
+        msg = f"\n=============爱奇艺任务状态=============\n日常任务：{task_rewards}" + msg  # \n签到：{check_in}
         logger.info(msg)
         # if self.push_token:
         #     push.pushplus(self.push_token, title='爱奇艺自动签到通知', content=msg)

@@ -25,9 +25,11 @@ def run_tvd():
 
 
 def run_aqy():
-    iqy = IQY2()
+    iqy = IQY()
+    iqy2 = IQY2()
     logger.success("爱奇艺任务启动成功")
-    return iqy.main()
+
+    return "\n" + iqy2.main() + iqy.get_user_info
 
 
 def run_tb():
