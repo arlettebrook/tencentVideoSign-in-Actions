@@ -29,7 +29,7 @@ def run_aqy():
     iqy2 = IQY2()
     logger.success("爱奇艺任务启动成功")
 
-    return "\n" + iqy2.main() + iqy.get_user_info
+    return "\n" + iqy2.main() + iqy.get_user_info()
 
 
 def run_tb():
@@ -74,7 +74,7 @@ def main():
             notice += f"\n{task_name}:\n{result}\n"
             logger.success(f"{task_name}已完成")
         except Exception as e:
-            notice += f"\n{task_name}未完成\n{result}\n"
+            notice += f"\n{task_name}未完成：+{e}\n{result}\n"
             logger.error(f"{task_name}未完成！")
             logger.exception(e)
 
