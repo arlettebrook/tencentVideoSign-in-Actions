@@ -29,7 +29,16 @@ def run_aqy():
     iqy2 = IQY2()
     logger.success("爱奇艺任务启动成功")
 
-    return "\n" + iqy2.main() + iqy.get_user_info()
+    msg1 = iqy.get_user_info()
+
+    try:
+        msg2 = iqy2.main()
+    except Exception as e:
+        info = f'爱奇艺签到运行失败：{e}'
+        logger.error(info)
+        msg2 = info
+
+    return "\n" + msg1 + msg2
 
 
 def run_tb():
