@@ -29,8 +29,6 @@ def run_aqy():
     iqy2 = IQY2()
     logger.success("爱奇艺任务启动成功")
 
-    msg1 = iqy.get_user_info()
-
     try:
         msg2 = iqy2.main()
     except Exception as e:
@@ -38,7 +36,9 @@ def run_aqy():
         logger.error(info)
         msg2 = info
 
-    return "\n" + msg1 + msg2
+    msg1 = iqy.get_user_info()
+
+    return msg1 + msg2
 
 
 def run_tb():
